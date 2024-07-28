@@ -1,117 +1,120 @@
-<!DOCTYPE html>
-<html lang="ru">
-<head>
-	<meta charset="utf-8">
-	<meta name="viewport" content="width=device-width, initial-scale=1">
-	<meta name="description" content="Информация о подписке и способах подключения">
-	<link rel="icon" type="image/x-icon" href="https://google.com/pic.png">
-	<title>VPN</title>
+<!doctype html>
+<html lang="en" data-bs-theme="auto">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="">
+    <meta name="author" content="Mark Otto">
+    <meta name="description" content="Основная информация о подписке и способах подключения">
+	<link rel="icon" href="http://fixbot.ru/img/favicon.ico" type="image/x-icon">
+    <title>Подписка пользователя {{ user.username }}</title>
+	<!--<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@docsearch/css@3">-->
 
-	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
-	<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.min.js" integrity="sha384-BBtl+eGJRgqQAUMxJ7pMwbEyER4l1g+O15P+16Ep7Q9Q+zqX6gSbd85u4mG4QzX+" crossorigin="anonymous"></script>
-
-	<script>
-        const expireDateInit = "{% if not user.expire %}∞{% else %}{% set current_timestamp = now().timestamp() %}{{ user.expire | datetime }}{% endif %}";
-        let expireDateVar = expireDateInit.includes("∞") ? "∞" : new Date(expireDateInit).toLocaleString("ru-RU").replace(",", "")
-	</script>
-
-</head>
-<body>
-
-	<!-- <header>
-		<h1><img id="logo" src="/www/logo.png">Logo</h1>
-	</header> -->
-
-	<main>
-		<div class="modules">
-			<div class="module subscription">
-				<h3 class="module-title">Страница подписки</h3>
-				<ul class="list-group list-group-flush">
-					<li class="list-group-item d-flex justify-content-between align-items-center">
-						Статус<span>{% if user.status.value =='active' %}<div class="dot dot-green"></div>Активна{% elif user.status.value == 'limited' %}<div class="dot dot-yellow"></div>Ограничена{% elif user.status.value == 'expired' %}<div class="dot dot-red"></div>Истекла{% else %}<div class="dot dot-red"></div>Заблокирована{% endif %}</span>	
-				    </li>		
-				</ul>
-			</div>
-
-			<div class="module">
-				<h3 class="module-title">Выберите платформу, чтобы установить VPN:</h3>
-				<div class="accordion accordion-flush" id="accordionApps">
-					<div class="accordion-item">
-					    <h2 class="accordion-header" id="flush-heading-apps-ios">
-					    	<button class="accordion-button collapsed lh0" type="button" data-bs-toggle="collapse" data-bs-target="#flush-collapse-apps-ios" aria-expanded="false" aria-controls="flush-collapse-apps-ios">iOS</button>
-					    </h2>
-					    <div id="flush-collapse-apps-ios" class="accordion-collapse collapse" aria-labelledby="flush-heading-apps-ios" data-bs-parent="#accordionApps">
-						    <div class="accordion-body">
-							    <h6 class="instructions-title">Следуйте инструкции:</h6>
-								<p>1. Нажмите "<a href="https://apps.apple.com/us/app/streisand/id6450534064" target="_blank" style="display: inline; text-decoration: underline; color: rgb(23,114,252);" class="link list-group-item list-group-item-action">Скачать приложение</a>", установите его и нажмите "Готово".</p>
-								<p>2. Нажмите "<a id="linkFix" href="https://google.com" target="_blank" style="display: inline; text-decoration: underline; color: rgb(23,114,252);" class="link list-group-item list-group-item-action">Добавить подписку</a>" и вернитесь на страницу подписки.</p>
-									
-								<script>
-									var a = document.getElementById('linkFix');
-									a.href = "streisand://import/" + window.location.href + "#Title";
-								</script>
-
-								<p>3. Нажмите "<a href="streisand://aW1wb3J0L3JvdXRlOi8vWW5Cc2FYTjBNRERWQVFJREJBVUdEaVVtSjFWeWRXeGxjMTFrYjIxaGFXNU5ZWFJqYUdWeVZHNWhiV1ZlWkc5dFlXbHVVM1J5WVhSbFozbFVkWFZwWktRSEV4Z2YxUWdKQ2dzTURRNFBFQkpiYjNWMFltOTFibVJVWVdkZFpHOXRZV2x1VFdGMFkyaGxjbFprYjIxaGFXNVNhWEJYYm1WMGQyOXlhMVprYVhKbFkzUldhSGxpY21sa29LRVJXR2RsYjJsd09uSjFWM1JqY0N4MVpIRFVGQlVLREEwT0ZoSmJiM1YwWW05MWJtUlVZV2RkWkc5dFlXbHVUV0YwWTJobGNxRVhXV1J2YldGcGJqcHlkZE1aR2dvYkRoeGJiM1YwWW05MWJtUlVZV2RkWkc5dFlXbHVUV0YwWTJobGNsVndjbTk0ZWFJZEhsbG5aM0JvZEM1amIyMVplWFJwYldjdVkyOXQxQ0FLQ3lFT0lpUU5YV1J2YldGcGJrMWhkR05vWlhKYmIzVjBZbTkxYm1SVVlXZWhJMThRRDJkbGIzTnBkR1U2ZVc5MWRIVmlaYUJVVWxWWlZGeEpVRWxtVG05dVRXRjBZMmhmRUNRMlFqSTJRVEkzUXkxQlFVRTJMVFEzT0RVdFFrTkZSaTB3TXpoRE0wSkRPREUxTUVFQUNBQVRBQmtBSndBc0FEc0FRQUJGQUZBQVhBQnFBSEVBZEFCOEFJTUFpZ0NMQUkwQWxnQ2VBS2NBc3dEQkFNTUF6UURVQU9BQTdnRDBBUGNCQVFFTEFSUUJJZ0V1QVRBQlFnRkRBVWdCVlFBQUFBQUFBQUlCQUFBQUFBQUFBQ2dBQUFBQUFBQUFBQUFBQUFBQUFBRjg=" target="_blank" style="display: inline; text-decoration: underline; color: rgb(23,114,252);" class="link list-group-item list-group-item-action">Добавить роутинг</a>".</p>
-                    			<p>4. Нажмите "Настройки" -> "Подписка" -> активируйте "Обновить при открытии" -> вернитесь в главное меню.</p>
-								<p>5. Нажмите "Главная" -> "Роутинг" -> выберите "RUYT" -> активируйте "Включить" -> вернитесь в главное меню.</p>
-                    			<p>6. Включите VPN, нажав на синюю кнопку.</p>
-							</div>
-					    </div>
-					 </div>
-				  	<div class="accordion-item">
-					    <h2 class="accordion-header" id="flush-heading-apps-android">
-					    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#flush-collapse-apps-android" aria-expanded="false" aria-controls="flush-collapse-apps-android">Android</button>
-					    </h2>
-					    <div id="flush-collapse-apps-android" class="accordion-collapse collapse" aria-labelledby="flush-heading-apps-android" data-bs-parent="#accordionApps">
-					    	<div class="accordion-body">
-							    <h6 class="instructions-title">Следуйте инструкции:</h6>
-								<p>1. Нажмите "<a href="https://play.google.com/store/apps/details?id=com.v2ray.ang" class="link list-group-item list-group-item-action" target="_blank" style="display: inline; text-decoration: underline; color: rgb(23,114,252);">Скачать приложение</a>", установите его и вернитесь на страницу подписки.</p>
-								<p>2. Нажмите "<a href="v2rayng://install-config?url={{ user.subscription_url }}&{{ user.username }}" target="_blank" style="display: inline; text-decoration: underline; color: rgb(23,114,252);" class="self-link link list-group-item list-group-item-action">Добавить подписку</a>".</p>
-								<p>3. Нажмите на три вертикальных точки -> "Обновить подписку".</p>
-								<p>3. Включите VPN, нажав на серую кнопку с галочкой.</p>
-							</div>
-					    </div>
-					 </div>
-					 <div class="accordion-item">
-					    <h2 class="accordion-header" id="flush-heading-apps-windows">
-					    	<button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#flush-collapse-apps-windows" aria-expanded="false" aria-controls="flush-collapse-apps-windows">Windows</button>
-					    </h2>
-					    <div id="flush-collapse-apps-windows" class="accordion-collapse collapse" aria-labelledby="flush-heading-apps-windows" data-bs-parent="#accordionApps">
-					    	<div class="accordion-body">
-							    <h6 class="instructions-title">Следуйте инструкции:</h6>
-								<p>1. Нажмите "<a href="https://github.com/hiddify/hiddify-next/releases/download/v1.1.1/Hiddify-Windows-Setup-x64.exe" target="_blank" style="display: inline; text-decoration: underline; color: rgb(23,114,252);" class="link list-group-item list-group-item-action">Скачать приложение</a>", установите его и вернитесь на страницу подписки.</p>
-								<p>2. Нажмите "<a href="hiddify://install-config/?url={{ user.subscription_url }}" target="_blank" style="display: inline; text-decoration: underline; color: rgb(23,114,252);" class="self-link link list-group-item list-group-item-action">Добавить подписку</a>" -> "Открыть приложение "Hiddify"".</p>
-								<p>3. Включите VPN, нажав на белую круглую кнопку.</p>
-							</div>
-					    </div>
-					 </div>
-					 <div class="accordion-item">
-					    <h2 class="accordion-header" id="flush-heading-apps-macos">
-					    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#flush-collapse-apps-macos" aria-expanded="false" aria-controls="flush-collapse-apps-macos">macOS</button>
-					    </h2>
-					    <div id="flush-collapse-apps-macos" class="accordion-collapse collapse" aria-labelledby="flush-heading-apps-macos" data-bs-parent="#accordionApps">
-					    	<div class="accordion-body">		    
-							    <h6 class="instructions-title">Следуйте инструкции:</h6>
-								<p>1. Нажмите "<a href="https://github.com/hiddify/hiddify-next/releases/download/v0.14.20/hiddify-macos-universal.zip" target="_blank" style="display: inline; text-decoration: underline; color: rgb(23,114,252);" class="link list-group-item list-group-item-action">Скачать приложение</a>", установите его и вернитесь на страницу подписки.</p>
-								<p>2. Нажмите "<a href="hiddify://install-config/?url={{ user.subscription_url }}" target="_blank" style="display: inline; text-decoration: underline; color: rgb(23,114,252);" class="self-link link list-group-item list-group-item-action">Добавить подписку</a>".</p>
-								<p>3. Включите VPN, нажав на белую круглую кнопку.</p>
-							</div>
-					    </div>
-					 </div>
-				</div>
-			</div>
-		</div>
-	</body>
-
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
 	<style>
+      .bd-placeholder-img {
+        font-size: 1.125rem;
+        text-anchor: middle;
+        -webkit-user-select: none;
+        -moz-user-select: none;
+        user-select: none;
+      }
 
-		html {
-		    margin: auto;
-		    max-width: 520px;
-		    min-width: 300px;
-		    padding: 0 25px 50px 25px;
+      @media (min-width: 768px) {
+        .bd-placeholder-img-lg {
+          font-size: 3.5rem;
+        }
+      }
+
+      .b-example-divider {
+        width: 100%;
+        height: 3rem;
+        background-color: rgba(0, 0, 0, .1);
+        border: solid rgba(0, 0, 0, .15);
+        border-width: 1px 0;
+        box-shadow: inset 0 .5em 1.5em rgba(0, 0, 0, .1), inset 0 .125em .5em rgba(0, 0, 0, .15);
+      }
+
+      .b-example-vr {
+        flex-shrink: 0;
+        width: 1.5rem;
+        height: 100vh;
+      }
+
+      .bi {
+        vertical-align: -.125em;
+        fill: currentColor;
+      }
+
+      .nav-scroller {
+        position: relative;
+        z-index: 2;
+        height: 2.75rem;
+        overflow-y: hidden;
+      }
+
+      .nav-scroller .nav {
+        display: flex;
+        flex-wrap: nowrap;
+        padding-bottom: 1rem;
+        margin-top: -1px;
+        overflow-x: auto;
+        text-align: center;
+        white-space: nowrap;
+        -webkit-overflow-scrolling: touch;
+      }
+
+      .btn-bd-primary {
+        --bd-violet-bg: #712cf9;
+        --bd-violet-rgb: 112.520718, 44.062154, 249.437846;
+
+        --bs-btn-font-weight: 600;
+        --bs-btn-color: var(--bs-white);
+        --bs-btn-bg: var(--bd-violet-bg);
+        --bs-btn-border-color: var(--bd-violet-bg);
+        --bs-btn-hover-color: var(--bs-white);
+        --bs-btn-hover-bg: #6528e0;
+        --bs-btn-hover-border-color: #6528e0;
+        --bs-btn-focus-shadow-rgb: var(--bd-violet-rgb);
+        --bs-btn-active-color: var(--bs-btn-hover-color);
+        --bs-btn-active-bg: #5a23c8;
+        --bs-btn-active-border-color: #5a23c8;
+      }
+
+      .bd-mode-toggle {
+        z-index: 1500;
+      }
+
+      .bd-mode-toggle .dropdown-menu .active .bi {
+        display: block !important;
+      }
+	  
+	  	#toast {
+		visibility: hidden;
+		width: fit-content;
+		margin: auto;
+		color: #000;
+		text-align: center;
+		position: fixed;
+		z-index: 1;
+		left: 0;
+		right: 0;
+		top: 20px;
+		font-size: 16px;
+		overflow: hidden;
+		white-space: nowrap;
 		}
 
+		#toast.show {
+		    visibility: visible;
+		    animation: fadein 1s, fadeout 1s 2s;
+		}
+		
+		[data-bs-theme=dark] #toast {
+			color: var(--bs-list-group-color)
+		}
+		
+		
 		.dot {
 			height: 10px;
 			width: 10px;
@@ -131,173 +134,406 @@
 		.dot-yellow {
 			background-color: #ffbe0a;
 		}
+		
+    </style>
+	
+	<script>
+        const expireDateInit = "{% if not user.expire %}∞{% else %}{% set current_timestamp = now().timestamp() %}{{ user.expire | datetime }}{% endif %}";
+        let expireDateVar = expireDateInit.includes("∞") ? "∞" : new Date(expireDateInit).toLocaleString("ru-RU").replace(",", "")
+	</script>
+	
+</head>
+  <body>
+    <svg xmlns="http://www.w3.org/2000/svg" class="d-none">
+      <symbol id="check2" viewBox="0 0 16 16">
+        <path d="M13.854 3.646a.5.5 0 0 1 0 .708l-7 7a.5.5 0 0 1-.708 0l-3.5-3.5a.5.5 0 1 1 .708-.708L6.5 10.293l6.646-6.647a.5.5 0 0 1 .708 0z"/>
+      </symbol>
+      <symbol id="circle-half" viewBox="0 0 16 16">
+        <path d="M8 15A7 7 0 1 0 8 1v14zm0 1A8 8 0 1 1 8 0a8 8 0 0 1 0 16z"/>
+      </symbol>
+      <symbol id="moon-stars-fill" viewBox="0 0 16 16">
+        <path d="M6 .278a.768.768 0 0 1 .08.858 7.208 7.208 0 0 0-.878 3.46c0 4.021 3.278 7.277 7.318 7.277.527 0 1.04-.055 1.533-.16a.787.787 0 0 1 .81.316.733.733 0 0 1-.031.893A8.349 8.349 0 0 1 8.344 16C3.734 16 0 12.286 0 7.71 0 4.266 2.114 1.312 5.124.06A.752.752 0 0 1 6 .278z"/>
+        <path d="M10.794 3.148a.217.217 0 0 1 .412 0l.387 1.162c.173.518.579.924 1.097 1.097l1.162.387a.217.217 0 0 1 0 .412l-1.162.387a1.734 1.734 0 0 0-1.097 1.097l-.387 1.162a.217.217 0 0 1-.412 0l-.387-1.162A1.734 1.734 0 0 0 9.31 6.593l-1.162-.387a.217.217 0 0 1 0-.412l1.162-.387a1.734 1.734 0 0 0 1.097-1.097l.387-1.162zM13.863.099a.145.145 0 0 1 .274 0l.258.774c.115.346.386.617.732.732l.774.258a.145.145 0 0 1 0 .274l-.774.258a1.156 1.156 0 0 0-.732.732l-.258.774a.145.145 0 0 1-.274 0l-.258-.774a1.156 1.156 0 0 0-.732-.732l-.774-.258a.145.145 0 0 1 0-.274l.774-.258c.346-.115.617-.386.732-.732L13.863.1z"/>
+      </symbol>
+      <symbol id="sun-fill" viewBox="0 0 16 16">
+        <path d="M8 12a4 4 0 1 0 0-8 4 4 0 0 0 0 8zM8 0a.5.5 0 0 1 .5.5v2a.5.5 0 0 1-1 0v-2A.5.5 0 0 1 8 0zm0 13a.5.5 0 0 1 .5.5v2a.5.5 0 0 1-1 0v-2A.5.5 0 0 1 8 13zm8-5a.5.5 0 0 1-.5.5h-2a.5.5 0 0 1 0-1h2a.5.5 0 0 1 .5.5zM3 8a.5.5 0 0 1-.5.5h-2a.5.5 0 0 1 0-1h2A.5.5 0 0 1 3 8zm10.657-5.657a.5.5 0 0 1 0 .707l-1.414 1.415a.5.5 0 1 1-.707-.708l1.414-1.414a.5.5 0 0 1 .707 0zm-9.193 9.193a.5.5 0 0 1 0 .707L3.05 13.657a.5.5 0 0 1-.707-.707l1.414-1.414a.5.5 0 0 1 .707 0zm9.193 2.121a.5.5 0 0 1-.707 0l-1.414-1.414a.5.5 0 0 1 .707-.707l1.414 1.414a.5.5 0 0 1 0 .707zM4.464 4.465a.5.5 0 0 1-.707 0L2.343 3.05a.5.5 0 1 1 .707-.707l1.414 1.414a.5.5 0 0 1 0 .708z"/>
+      </symbol>
+    </svg>
 
-		.app-icon {
-			margin-right: 8px;
-		}
+    <div class="dropdown position-fixed bottom-0 end-0 mb-3 me-3 bd-mode-toggle">
+      <button class="btn btn-bd-primary py-2 dropdown-toggle d-flex align-items-center"
+              id="bd-theme"
+              type="button"
+              aria-expanded="false"
+              data-bs-toggle="dropdown"
+              aria-label="Toggle theme (auto)">
+        <svg class="bi my-1 theme-icon-active" width="1em" height="1em"><use href="#circle-half"></use></svg>
+        <span class="visually-hidden" id="bd-theme-text">Toggle theme</span>
+      </button>
+      <ul class="dropdown-menu dropdown-menu-end shadow" aria-labelledby="bd-theme-text">
+        <li>
+          <button type="button" class="dropdown-item d-flex align-items-center" data-bs-theme-value="light" aria-pressed="false">
+            <svg class="bi me-2 opacity-50 theme-icon" width="1em" height="1em"><use href="#sun-fill"></use></svg>
+            Light
+            <svg class="bi ms-auto d-none" width="1em" height="1em"><use href="#check2"></use></svg>
+          </button>
+        </li>
+        <li>
+          <button type="button" class="dropdown-item d-flex align-items-center" data-bs-theme-value="dark" aria-pressed="false">
+            <svg class="bi me-2 opacity-50 theme-icon" width="1em" height="1em"><use href="#moon-stars-fill"></use></svg>
+            Dark
+            <svg class="bi ms-auto d-none" width="1em" height="1em"><use href="#check2"></use></svg>
+          </button>
+        </li>
+        <li>
+          <button type="button" class="dropdown-item d-flex align-items-center active" data-bs-theme-value="auto" aria-pressed="true">
+            <svg class="bi me-2 opacity-50 theme-icon" width="1em" height="1em"><use href="#circle-half"></use></svg>
+            Auto
+            <svg class="bi ms-auto d-none" width="1em" height="1em"><use href="#check2"></use></svg>
+          </button>
+        </li>
+      </ul>
+    </div>
 
-		.img-help {
-			margin-top: 10px;
-			margin-bottom: 10px;
-		}
+    
+<svg xmlns="http://www.w3.org/2000/svg" class="d-none">
+  <symbol id="calendar-event" viewBox="0 0 16 16">
+    <path d="M11 6.5a.5.5 0 0 1 .5-.5h1a.5.5 0 0 1 .5.5v1a.5.5 0 0 1-.5.5h-1a.5.5 0 0 1-.5-.5v-1z"/>
+    <path d="M3.5 0a.5.5 0 0 1 .5.5V1h8V.5a.5.5 0 0 1 1 0V1h1a2 2 0 0 1 2 2v11a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2V3a2 2 0 0 1 2-2h1V.5a.5.5 0 0 1 .5-.5zM1 4v10a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1V4H1z"/>
+  </symbol>
 
-		.subscription li {
-			padding-top: 10px;
-			padding-bottom: 10px;
-		}
+  <symbol id="alarm" viewBox="0 0 16 16">
+    <path d="M8.5 5.5a.5.5 0 0 0-1 0v3.362l-1.429 2.38a.5.5 0 1 0 .858.515l1.5-2.5A.5.5 0 0 0 8.5 9V5.5z"/>
+    <path d="M6.5 0a.5.5 0 0 0 0 1H7v1.07a7.001 7.001 0 0 0-3.273 12.474l-.602.602a.5.5 0 0 0 .707.708l.746-.746A6.97 6.97 0 0 0 8 16a6.97 6.97 0 0 0 3.422-.892l.746.746a.5.5 0 0 0 .707-.708l-.601-.602A7.001 7.001 0 0 0 9 2.07V1h.5a.5.5 0 0 0 0-1h-3zm1.038 3.018a6.093 6.093 0 0 1 .924 0 6 6 0 1 1-.924 0zM0 3.5c0 .753.333 1.429.86 1.887A8.035 8.035 0 0 1 4.387 1.86 2.5 2.5 0 0 0 0 3.5zM13.5 1c-.753 0-1.429.333-1.887.86a8.035 8.035 0 0 1 3.527 3.527A2.5 2.5 0 0 0 13.5 1z"/>
+  </symbol>
 
-		.accordion-body .list-group {
-			padding-bottom: 5px;
-		}
+  <symbol id="list-check" viewBox="0 0 16 16">
+    <path fill-rule="evenodd" d="M5 11.5a.5.5 0 0 1 .5-.5h9a.5.5 0 0 1 0 1h-9a.5.5 0 0 1-.5-.5zm0-4a.5.5 0 0 1 .5-.5h9a.5.5 0 0 1 0 1h-9a.5.5 0 0 1-.5-.5zm0-4a.5.5 0 0 1 .5-.5h9a.5.5 0 0 1 0 1h-9a.5.5 0 0 1-.5-.5zM3.854 2.146a.5.5 0 0 1 0 .708l-1.5 1.5a.5.5 0 0 1-.708 0l-.5-.5a.5.5 0 1 1 .708-.708L2 3.293l1.146-1.147a.5.5 0 0 1 .708 0zm0 4a.5.5 0 0 1 0 .708l-1.5 1.5a.5.5 0 0 1-.708 0l-.5-.5a.5.5 0 1 1 .708-.708L2 7.293l1.146-1.147a.5.5 0 0 1 .708 0zm0 4a.5.5 0 0 1 0 .708l-1.5 1.5a.5.5 0 0 1-.708 0l-.5-.5a.5.5 0 0 1 .708-.708l.146.147 1.146-1.147a.5.5 0 0 1 .708 0z"/>
+  </symbol>
+</svg>
 
-		.accordion, 
-		.subscription .list-group {
-			box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
-		    border-radius: 15px;
-		    overflow: hidden;
-		}
+<div class="container">
 
-		.accordion .list-group {
-			padding-top: 0px;
-		    --bs-list-group-item-padding-x: 5px;
-		}
+<div class="d-flex flex-column flex-md-row p-4 gap-4 py-md-5 align-items-center justify-content-center">
+<div class="card col-md-8">
+  <div class="card-header">
+    SUBSCRIPTION PAGE
+  </div>
+  <ul class="list-group list-group-flush">
+    <li class="list-group-item d-flex gap-3 py-3" aria-current="true">
+	<img src="https://i.postimg.cc/N0ntpVJm/user.png" alt="twbs" width="32" height="32" class="rounded">
+	<div class="d-flex gap-2 w-100 justify-content-between">
+        <div>
+          <h6 class="mb-0">Пользователь</h6>
+          <small class="opacity-50 text-nowrap text-start">Ваше имя (username) в системе.</small>
+        </div>
+        <small class="text-end text-nowrap  opacity-50"><b>{{ user.username }}</b></small>
+      </div>
+	</li>
+	
+	<li class="list-group-item d-flex gap-3 py-3" aria-current="true">
+	<img src="https://i.postimg.cc/gJ8yP2BK/GS-bettery-icon-2.png" alt="twbs" width="32" height="32" class="rounded">
+	<div class="d-flex gap-2 w-100 justify-content-between">
+        <div>
+          <h6 class="mb-0">Статус</h6>
+          <small class="opacity-50 text-start text-nowrap">Статус Вашей подписки.</small>
+        </div>
+        <small class="opacity-50 text-end text-nowrap">{% if user.status.value =='active' %}<div class="dot dot-green"></div>Активна{% elif user.status.value == 'limited' %}<div class="dot dot-yellow"></div>Ограничена{% elif user.status.value == 'expired' %}<div class="dot dot-red"></div>Истекла{% else %}<div class="dot dot-red"></div>Заблокирована{% endif %}</small>
+      </div>
+	</li>
+	
+	<li class="list-group-item d-flex gap-3 py-3" aria-current="true">
+	<img src="https://i.postimg.cc/9Q9Qbw41/Ida-vuelta.png" alt="twbs" width="32" height="32" class="rounded">
+	<div class="d-flex gap-2 w-100 justify-content-between">
+        <div>
+          <h6 class="mb-0">Ваш трафик</h6>
+          <small class="opacity-50 text-start text-nowrap">Используемый Вами трафик.</small>
+        </div>
+        <small class="opacity-50 text-nowrap text-end">{{ user.used_traffic | bytesformat }} / {% if not user.data_limit %}∞{% else %}{{ user.data_limit | bytesformat }}{% endif %}</small>
+      </div>
+	</li>
+	
+	<li class="list-group-item d-flex gap-3 py-3" aria-current="true">
+	<img src="https://i.postimg.cc/nc1sV4cg/Anonymous-alarm-clock.png" alt="twbs" width="32" height="32" class="rounded">
+	<div class="d-flex gap-2 w-100 justify-content-between">
+        <div>
+          <h6 class="mb-0">Истекает</h6>
+          <small class="opacity-50 text-start text-nowrap">Ваша подписка истекает.</small>
+        </div>
+        <small class="opacity-50 text-nowrap text-end"><span id="expire"></span><script>document.getElementById('expire').innerHTML = expireDateVar</script></small>
+      </div>
+	</li>
+	
+	<li class="list-group-item d-flex gap-3 py-3" aria-current="true">
+	<img src="https://i.postimg.cc/B6GLQMHW/call-group.png" alt="twbs" width="32" height="32" class="rounded">
+	<div class="d-flex gap-2 w-100 justify-content-between">
+        <div>
+          <h6 class="mb-0">Чат поддержки</h6>
+          <small class="opacity-50 text-start text-nowrap">Хотите задать вопросы?</small>
+        </div>
+		 <a href="https://google.com" target="_blank" rel="noopener noreferrer"><button type="button" class="btn btn-outline-primary btn-sm">Click</button></a>
+      </div>
+	</li>
+	
+	<li class="list-group-item d-flex gap-3 py-3" aria-current="true">
+	<img src="https://i.postimg.cc/cHPRmxGY/Connected.png" alt="twbs" width="32" height="32" class="rounded">
+	<div class="d-flex gap-2 w-100 justify-content-between">
+        <div>
+          <h6 class="mb-0">Скопировать подписку</h6>
+          <small class="opacity-50 text-start text-nowrap">Скопировать в буфер обмена.</small>
+        </div>
+<div class="grid text-center">
+  <div class="g-col-6">
+  <button type="button" class="btn btn-outline-primary btn-sm" onclick="copyToClipboard(window.location.href); showNotification('toast');">Click</button>
+		 <div id="toast">Подписка скопирована</div>
+  </div>
+</div>
+		
+      </div>
+	</li>
+	<div class="card-header">Приложения</div>
+	
+<div class="accordion accordion-flush" id="accordionFlushExample">
+  <div class="accordion-item">
+    <h2 class="accordion-header">
+      <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#flush-collapse1" aria-expanded="false" aria-controls="flush-collapse1">
+        IOS
+      </button>
+    </h2>
+    <div id="flush-collapse1" class="accordion-collapse collapse" data-bs-parent="#accordionFlushExample">
+      <div class="accordion-body">
+	  <div class="card card-body border border-info">
+	  <h3>Streisand</h3>
+		Streisand - рекомендуемое приложение для IOS 14+
+				<!-- For some reason js code doesn't work on Safari. The only quick fix I know -->
+		<script>
+			var a = document.getElementById('linkFix');
+			a.href = "streisand://import/" + window.location.href + "#Title";
+		</script>
+		
+		<div class="d-grid gap-2">
+			<a href="https://apps.apple.com/us/app/streisand/id6450534064" target="_blank" class="btn btn-outline-primary btn-sm" type="button">Скачать в AppStore</a>
+			
+			<a id="linkFix" href="streisand://import/{{ user.subscription_url }}" target="_blank" class="btn btn-outline-primary btn-sm" type="button">
+			<span>Добавить подписку</span></a>
+			
+			
+			<a href="streisand://aW1wb3J0L3JvdXRlOi8vWW5Cc2FYTjBNRERWQVFJREJBVUdIUjRmSUZWeWRXeGxjMTFrYjIxaGFXNU5ZWFJqYUdWeVZHNWhiV1ZlWkc5dFlXbHVVM1J5WVhSbFozbFVkWFZwWktJSEdOTUlDUW9MREExU2FYQmJiM1YwWW05MWJtUlVZV2RXWkc5dFlXbHVvRlprYVhKbFkzU3FEZzhRRVJJVEZCVVdGMTV5WldkbGVIQTZMaXBjTG5KMUpGOFFEMmRsYjNOcGRHVTZlVzkxZEhWaVpWOFFFR2RsYjNOcGRHVTZkR1ZzWldkeVlXMWRaMlZ2YzJsMFpUcGhjSEJzWlY1blpXOXphWFJsT21kdmIyZHNaVjVuWlc5emFYUmxPbmxoYm1SbGVGcG5aVzl6YVhSbE9uWnJYeEFYWjJWdmMybDBaVHBqWVhSbFoyOXllUzFuYjNZdGNuVmVaMlZ2YzJsMFpUcDBkMmwwWTJoZkVCQm5aVzl6YVhSbE9uZG9ZWFJ6WVhCdzBnZ1pHZ3hiYjNWMFltOTFibVJVWVdlaUd4eFlaMlZ2YVhBNmNuVmRaMlZ2YVhBNmNISnBkbUYwWlZab2VXSnlhV1JvQkNBRVBnUkRCRUlFT0FROUJETUFJRnBKVUU5dVJHVnRZVzVrWHhBa1FqUkNRemRHUWtNdE1FSTVPUzAwT1RNd0xVSXhSVU10TjBWRE1rVkdSRGRDTVRFM0FBZ0FFd0FaQUNjQUxBQTdBRUFBUXdCS0FFMEFXUUJnQUdFQWFBQnpBSUlBbEFDbkFMVUF4QURUQU40QStBRUhBUm9CSHdFckFTNEJOd0ZGQVV3QlhRRm9BQUFBQUFBQUFnRUFBQUFBQUFBQUlRQUFBQUFBQUFBQUFBQUFBQUFBQVk4PQ==" target="_blank" class="btn btn-outline-primary btn-sm" type="button">
+			<span>Добавить роутинг</span></a>		
+		</div>  
+	  </div>
+	  </br>
+	  <div class="card card-body border border-info">
+	  	<h6 class="instructions-title">Инструкция по подключению</h6>
+		<p>1. Нажмите Скачать в AppStore, чтобы установить приложение</p>
+		<p>2. Нажмите Добавить подписку.</p>	
+		<p>3. Перейдите Настройки -> Подписка и поставьте чекбокс Обновить при открытии.
+		<img class="img-fluid rounded img-help" src="https://i.postimg.cc/02zbLbv3/IMG-7503.jpg"></p>
+		<p>4. Нажмите Добавить роутинг, в приложении нажмите Роутинг и поставьте рядом с ним галочку, нажмите сверху на чекбокс, чтобы применить правила роутинга. Роутинг - правила для перенаправления трафика, без него приложение может работать неправильно.</p>
+		<p>5. Осталось выбрать страну подключения и нажать Подключиться. Готово!
+		<img class="img-fluid rounded img-help" src="https://i.postimg.cc/PxqtYRrc/IMG-7504.jpg"></p>
+		</div>
+	  </br>
+	  <div class="card card-body border border-info">
+	  
+									<h6 class="instructions-title">Другие приложения для для IOS 14+</h6>
+									<p>Karing, FoxRay, v2box, SingBox, ShadowRocket.</p>
+									<p>Данные приложения Вы можете скачать с AppStore</p>
+	  </div>
+	  </div>
+    </div>
+  </div>
+  <div class="accordion-item">
+    <h2 class="accordion-header">
+      <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#flush-collapse2" aria-expanded="false" aria-controls="flush-collapse2">
+       Android
+      </button>
+    </h2>
+    <div id="flush-collapse2" class="accordion-collapse collapse" data-bs-parent="#accordionFlushExample">
+      <div class="accordion-body">
+	  <div class="card card-body border border-info">
+	  <h3>v2rayNG</h3>
+		v2rayNG - рекомендуемое приложение для Android
+	  
+	  		<div class="d-grid gap-2">
+			<a href="https://play.google.com/store/apps/details?id=com.v2ray.ang" target="_blank" class="btn btn-outline-primary btn-sm" type="button">Скачать в Google Play</a>
+			
+			<a href="v2rayng://install-config?url={{ user.subscription_url }}&name=Title" target="_blank" class="btn btn-outline-primary btn-sm" type="button">
+			<span>Добавить подписку</span></a>
 
-		.lh0 {
-			line-height: 0;
-		}
+		</div>
+	  </div>
+	  	  </br>
+	  <div class="card card-body border border-info">
+	  	<h6 class="instructions-title">Инструкция по подключению</h6>
+								    <p>1. Нажмите Скачать в Google Play, чтобы установить приложение.</p>
+								    <p>2. Нажмите Добавить подписку.</p>
+								    <p>3. Нажмите на три вертикальных точки
+									<img class="img-fluid rounded img-help" src="https://i.postimg.cc/V6Jqv0qF/photo-5294201900410983789-y.jpg"></p><p>и выберите Обновить подписку. 
+									<img class="img-fluid rounded img-help" src="https://i.postimg.cc/W1Vw83V2/update.jpg"></p>
+								    <p>4. Теперь осталось выбрать страну и подключиться, нажав на иконку приложения в правом нижнем углу. 
+									<img class="img-fluid rounded img-help" src="https://i.postimg.cc/pybp2pCy/connect.jpg"></p>
+									<p>Готово!</p>
+	  </div>
+	  </br>
+	  <div class="card card-body border border-info">
+	  
+									<h6 class="instructions-title">Другие приложения из Google Play</h6>
+									<p>Karing, NekoRay, Hiddify.</p>
+									<p>Данные приложения Вы можете скачать с Google Play</p>
+	  </div>
+	  
+	  </div>
+    </div>
+  </div>
+  <div class="accordion-item">
+    <h2 class="accordion-header">
+      <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#flush-collapse3" aria-expanded="false" aria-controls="flush-collapse3">
+       Windows
+      </button>
+    </h2>
+    <div id="flush-collapse3" class="accordion-collapse collapse" data-bs-parent="#accordionFlushExample">
+      <div class="accordion-body">
+	  <div class="card card-body border border-info">
+	  <h3>Hiddify-Next</h3>
+		Hiddify-Next - рекомендуемое приложение для Windows
+		<div class="d-grid gap-2">
+		<a href="https://github.com/hiddify/hiddify-next/releases/latest/download/hiddify-windows-x64-setup.zip" target="_blank" class="btn btn-outline-primary btn-sm" type="button">Скачать с GitHub</a>
+		<a href="hiddify://install-sub/?url={{ user.subscription_url }}#Title" target="_blank" class="btn btn-outline-primary btn-sm" type="button">
+		<span>Добавить подписку</span></a>
+		</div>
+	  </div>
+	  </br>
+	  <div class="card card-body border border-info">
+	  	<h6 class="instructions-title">Инструкция по подключению</h6>
+								    <p>1. Нажмите Скачать с GitHub, чтобы установить приложение</p>
+								    <p>2. Смените язык на Русский, в качестве региона укажите Россия (это необходимо, чтобы настройки роутинга применились автоматически) и нажмите Начать</p>
+								    <p>3. Нажмите Добавить подписку</p>
+								    <p>4. Нажмите подключиться. Готово!</p>
+	  </div>
+	  </br>
+	  <div class="card card-body border border-info">
+	  	<h6 class="instructions-title">Другие приложения для Windows</h6>
+				<p>NekoRay, v2rayN</p>
+				<div class="d-grid gap-2">
+				<a href="https://github.com/MatsuriDayo/nekoray/releases" target="_blank" class="btn btn-outline-primary btn-sm" type="button"><span>NekoRay</span></a>
+				<a href="https://github.com/2dust/v2rayN/releases" target="_blank" class="btn btn-outline-primary btn-sm" type="button">
+				<span>v2rayN</span></a>
+				</div>
+	  </div>
+</div></div>
+    </div>
+	  <div class="accordion-item">
+    <h2 class="accordion-header">
+      <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#flush-collapse4" aria-expanded="false" aria-controls="flush-collapse4">
+        macOS
+      </button>
+    </h2>
+    <div id="flush-collapse4" class="accordion-collapse collapse" data-bs-parent="#accordionFlushExample">
+      <div class="accordion-body">
+	  <div class="card card-body border border-info">
+	  <h3>Hiddify-Next</h3>
+		Hiddify-Next - рекомендуемое приложение для Windows
+	  
+	  		<div class="d-grid gap-2">
+			<a href="https://github.com/hiddify/hiddify-next/releases/latest/download/hiddify-macos-universal.zip" target="_blank" class="btn btn-outline-primary btn-sm" type="button">Скачать с GitHub</a>
+			
+			<a href="hiddify://install-sub/?url={{ user.subscription_url }}#Title" target="_blank" class="btn btn-outline-primary btn-sm" type="button">
+			<span>Добавить подписку</span></a>
 
-		.instructions {
-			margin-top: 15px;
-		}
+		</div>
+	  </div>
+	  	  </br>
+	<div class="card card-body border border-info">
+	  	<h6 class="instructions-title">Инструкция по подключению</h6>
+			<p>1. Нажмите Скачать с GitHub, чтобы установить приложение</p>
+			<p>2. Смените язык на Русский, в качестве региона укажите Россия (это необходимо, чтобы настройки роутинга применились автоматически) и нажмите Начать</p>
+			<p>3. Нажмите Добавить подписку</p>
+			<p>4. Нажмите подключиться. Готово!</p>
+	</div>
+	</div>
+	  </div>
+    </div>
+	<div class="accordion-item">
+    <h2 class="accordion-header">
+      <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#flush-collapse5" aria-expanded="false" aria-controls="flush-collapse5">
+        Linux
+      </button>
+    </h2>
+    <div id="flush-collapse5" class="accordion-collapse collapse" data-bs-parent="#accordionFlushExample">
+      <div class="accordion-body">
+	  <div class="card card-body border border-info">
+	  <h3>Hiddify-Next</h3>
+		Hiddify-Next - рекомендуемое приложение для Windows
+	  
+	  		<div class="d-grid gap-2">
+			<a href="https://github.com/hiddify/hiddify-next/releases/latest/download/hiddify-linux-x64.zip" target="_blank" class="btn btn-outline-primary btn-sm" type="button">Скачать с GitHub</a>
+			
+			<a href="hiddify://install-sub/?url={{ user.subscription_url }}#Title" target="_blank" class="btn btn-outline-primary btn-sm" type="button">
+			<span>Добавить подписку</span></a>
 
-		.instructions p {
-			margin-bottom: 10px;
-		}
+		</div>
+	  </div>
+	  	  </br>
+	<div class="card card-body border border-info">
+	  	<h6 class="instructions-title">Инструкция по подключению</h6>
+			<p>1. Нажмите Скачать с GitHub, чтобы установить приложение</p>
+			<p>2. Смените язык на Русский, в качестве региона укажите Россия (это необходимо, чтобы настройки роутинга применились автоматически) и нажмите Начать</p>
+			<p>3. Нажмите Добавить подписку</p>
+			<p>4. Нажмите подключиться. Готово!</p>
+	</div>	  
+	  </div>
+	  </div>
+    </div>	
+  </div>
 
-		.instructions-title {
-			margin: 10px 0;
-			font-size: 22.5px;
-			margin-bottom: 15px;
-		}
+<div class="card-header">Полезная информация</div>
 
-		.link {
-			display: flex;
-		}
+<div class="accordion accordion-flush" id="accordionFlushExample">
+  <div class="accordion-item">
+    <h2 class="accordion-header">
+      <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#flush-collapseOne" aria-expanded="false" aria-controls="flush-collapseOne">
+        Что такое роутинг и для чего он нужен?
+      </button>
+    </h2>
+    <div id="flush-collapseOne" class="accordion-collapse collapse" data-bs-parent="#accordionFlushExample">
+      <div class="accordion-body">
+	  <div class="card card-body border border-info">Роутинг - правила для перенаправления трафика, они предоставляют гибкую настроку для подключения.</div></div>
+    </div>
+  </div>
+  <div class="accordion-item">
+    <h2 class="accordion-header">
+      <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#flush-collapseTwo" aria-expanded="false" aria-controls="flush-collapseTwo">
+        Что такое подписка?
+      </button>
+    </h2>
+    <div id="flush-collapseTwo" class="accordion-collapse collapse" data-bs-parent="#accordionFlushExample">
+      <div class="accordion-body">
+	  <div class="card card-body border border-info">Подписка - ссылка в специальном формате, по которой приложение загружает с сервера данные, необходимые для подключения.</div></div>
+    </div>
+  </div>
+  <div class="accordion-item">
+    <h2 class="accordion-header">
+      <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#flush-collapseThree" aria-expanded="false" aria-controls="flush-collapseThree">
+        Хочу использовать другое приложения для подключения.
+      </button>
+    </h2>
+    <div id="flush-collapseThree" class="accordion-collapse collapse" data-bs-parent="#accordionFlushExample">
+      <div class="accordion-body">
+	  <div class="card card-body border border-info">Напишите нам в чат поддержки, мы поможем Вам настроить приложение.</div></div></div>
+    </div>
+  </div>
+  
 
-		.link-icon {
-			width: 25px;
-			height: 25px;
-			margin-left: auto;
-		}
+  
+</div>
+</ul>
+</div>
+</div>
 
-		.module-title {
-			margin-top: 25px;
-			margin-bottom: 25px;
-			font-size: 25px;
-		}
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
 
-		.module-title-2 {
-			font-size: 22.5px;
-		}
-
-		.accordion-button:not(.collapsed) {
-			background-color: #DCDCDC;
-			color: var(--bs-accordion-btn-color)
-		}
-
-		.accordion-button:focus {
-			box-shadow: none;
-			border-color: white;
-		}
-
-		.form-check-input:focus {
-			box-shadow: none;
-		}
-
-		#toast {
-			visibility: hidden;
-		    width: fit-content;
-		    margin: auto;
-		    color: #000;
-		    text-align: center;
-		    position: fixed;
-		    z-index: 1;
-		    left: 0;
-		    right: 0;
-		    top: 45px;
-		    font-size: 16px;
-			overflow: hidden;
-			white-space: nowrap;
-		}
-
-		#toast.show {
-		    visibility: visible;
-		    animation: fadein 1s, fadeout 1s 2s;
-		}
-
-		@keyframes fadein {
-		    from {
-		        top: 0;
-		        opacity: 0;
-		    }
-		    to {
-		        top: 45px;
-		        opacity: 1
-		    }
-		}
-
-		@keyframes fadeout {
-		    from {
-		        top: 45px;
-		        opacity: 1;
-		    }
-		    to {
-		        top: 0;
-		        opacity: 0;
-		    }
-		}
-
-		[data-bs-theme=light] .form-check-input:focus {
-			border-color: #dee2e6;
-			--bs-form-switch-bg: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='-4 -4 8 8'%3e%3ccircle r='3' fill='rgba%280, 0, 0, 0.25%29'/%3e%3c/svg%3e");
-		}
-
-
-
-		/* Full dark theme */
-		[data-bs-theme=dark] .link-dark {
-			color: #dee2e6 !important; 
-			text-decoration: none;
-		}
-
-		[data-bs-theme=dark] #toast {
-			color: var(--bs-list-group-color)
-		}
-
-		[data-bs-theme=dark] svg {
-			filter: invert(100%) sepia(10%) saturate(7500%) hue-rotate(198deg) brightness(120%) contrast(108%);
-		}
-
-		[data-bs-theme=dark] *,
-		[data-bs-theme=dark] .subscription .list-group-item span, 
-		{
-		    background-color: #181818;
-		}
-
-		[data-bs-theme=dark] .accordion-button,
-		[data-bs-theme=dark] .subscription .list-group-item,
-		[data-bs-theme=dark] .subscription .list-group-item > *
-		{
-		    background-color: #282828;
-		}
-
-		[data-bs-theme=dark] .accordion-button:not(.collapsed) {
-			background-color: #383838;
-		}
-
-	</style>
-
-	<script type="text/javascript">
+<script type="text/javascript">
 
 		function showNotification(notificationElementId) {
 		  	let notification = document.getElementById(notificationElementId)
@@ -311,17 +547,96 @@
 			navigator.clipboard.writeText(text);
 		}
 
-		const buttonSwitchTheme = document.getElementById('btnSwitchTheme');
-		buttonSwitchTheme.checked = currentThemeSetting === 'dark';
-		buttonSwitchTheme.addEventListener("click", () => {
-			  const newTheme = currentThemeSetting === "dark" ? "light" : "dark";
-			  setTheme(newTheme);			  
-		});
-
 		const links = document.getElementsByClassName('self-link');
 		Array.from(links).forEach(link => {
 			link.href = link.href.replace('{link}', window.location.href);
 		});
 
 	</script>
+
+<script type="text/javascript">
+
+/*!
+ * Color mode toggler for Bootstrap's docs (https://getbootstrap.com/)
+ * Copyright 2011-2024 The Bootstrap Authors
+ * Licensed under the Creative Commons Attribution 3.0 Unported License.
+ */
+
+(() => {
+  'use strict'
+
+  const getStoredTheme = () => localStorage.getItem('theme')
+  const setStoredTheme = theme => localStorage.setItem('theme', theme)
+
+  const getPreferredTheme = () => {
+    const storedTheme = getStoredTheme()
+    if (storedTheme) {
+      return storedTheme
+    }
+
+    return window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light'
+  }
+
+  const setTheme = theme => {
+    if (theme === 'auto') {
+      document.documentElement.setAttribute('data-bs-theme', (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light'))
+    } else {
+      document.documentElement.setAttribute('data-bs-theme', theme)
+    }
+  }
+
+  setTheme(getPreferredTheme())
+
+  const showActiveTheme = (theme, focus = false) => {
+    const themeSwitcher = document.querySelector('#bd-theme')
+
+    if (!themeSwitcher) {
+      return
+    }
+
+    const themeSwitcherText = document.querySelector('#bd-theme-text')
+    const activeThemeIcon = document.querySelector('.theme-icon-active use')
+    const btnToActive = document.querySelector(`[data-bs-theme-value="${theme}"]`)
+    const svgOfActiveBtn = btnToActive.querySelector('svg use').getAttribute('href')
+
+    document.querySelectorAll('[data-bs-theme-value]').forEach(element => {
+      element.classList.remove('active')
+      element.setAttribute('aria-pressed', 'false')
+    })
+
+    btnToActive.classList.add('active')
+    btnToActive.setAttribute('aria-pressed', 'true')
+    activeThemeIcon.setAttribute('href', svgOfActiveBtn)
+    const themeSwitcherLabel = `${themeSwitcherText.textContent} (${btnToActive.dataset.bsThemeValue})`
+    themeSwitcher.setAttribute('aria-label', themeSwitcherLabel)
+
+    if (focus) {
+      themeSwitcher.focus()
+    }
+  }
+
+  window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', () => {
+    const storedTheme = getStoredTheme()
+    if (storedTheme !== 'light' && storedTheme !== 'dark') {
+      setTheme(getPreferredTheme())
+    }
+  })
+
+  window.addEventListener('DOMContentLoaded', () => {
+    showActiveTheme(getPreferredTheme())
+
+    document.querySelectorAll('[data-bs-theme-value]')
+      .forEach(toggle => {
+        toggle.addEventListener('click', () => {
+          const theme = toggle.getAttribute('data-bs-theme-value')
+          setStoredTheme(theme)
+          setTheme(theme)
+          showActiveTheme(theme, true)
+        })
+      })
+  })
+})()
+
+</script>		
+</body>
 </html>
